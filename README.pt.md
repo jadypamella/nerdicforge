@@ -1,6 +1,6 @@
-# NerdicForge Local - Stripe Integration from Scratch
+# NerdicForge Local - Stripe Integration do Zero
 
-E-commerce with complete Stripe integration, built step-by-step for learning.
+E-commerce com integração Stripe completa, construída passo-a-passo para aprendizado.
 
 **Stack:**
 - Frontend: React + TypeScript + Vite + TailwindCSS
@@ -10,15 +10,15 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 
 ---
 
-## Complete Checkout Flow (Start to Finish)
+## Fluxo Completo do Checkout (Início ao Fim)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                              COMPLETE PAYMENT FLOW                                       │
+│                           FLUXO COMPLETO DE PAGAMENTO                                    │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
-│  1. ADD TO CART                                                                         │
-│  ──────────────                                                                         │
+│  1. ADICIONAR AO CARRINHO                                                               │
+│  ────────────────────────                                                               │
 │  ProductCard.tsx                                                                        │
 │       │                                                                                  │
 │       └──► addToCart(product)                                                           │
@@ -31,8 +31,8 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 │                                                                                          │
 │  ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│  2. START CHECKOUT                                                                      │
-│  ─────────────────                                                                      │
+│  2. INICIAR CHECKOUT                                                                    │
+│  ───────────────────                                                                    │
 │  Cart.tsx                                                                               │
 │       │                                                                                  │
 │       └──► handleCheckout()                                                             │
@@ -45,17 +45,17 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 │                                                                                          │
 │  ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│  3. BACKEND PROCESSES                                                                   │
-│  ────────────────────                                                                   │
+│  3. BACKEND PROCESSA                                                                    │
+│  ───────────────────                                                                    │
 │  server/index.ts                                                                        │
 │       │                                                                                  │
-│       ├──► Validates items                                                              │
+│       ├──► Valida items                                                                 │
 │       │                                                                                  │
-│       ├──► Converts to Stripe line_items:                                              │
+│       ├──► Converte para Stripe line_items:                                            │
 │       │    {                                                                             │
 │       │      price_data: {                                                              │
 │       │        currency: 'sek',                                                         │
-│       │        unit_amount: 329900,  // cents (öre)                                    │
+│       │        unit_amount: 329900,  // centavos (öre)                                 │
 │       │        product_data: { name: 'Griffith...' }                                   │
 │       │      },                                                                         │
 │       │      quantity: 1                                                                │
@@ -70,7 +70,7 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 │            })                                                                           │
 │                   │                                                                      │
 │                   ▼                                                                      │
-│            Stripe API returns:                                                          │
+│            Stripe API retorna:                                                          │
 │            {                                                                            │
 │              id: 'cs_test_a18ZtTRDi89...',                                             │
 │              url: 'https://checkout.stripe.com/c/pay/cs_test_...'                      │
@@ -78,141 +78,141 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 │                                                                                          │
 │  ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│  4. REDIRECT TO STRIPE                                                                  │
-│  ─────────────────────                                                                  │
+│  4. REDIRECT PARA STRIPE                                                                │
+│  ───────────────────────                                                                │
 │  Cart.tsx                                                                               │
 │       │                                                                                  │
 │       └──► window.location.href = 'https://checkout.stripe.com/c/pay/cs_test_...'     │
 │                                                                                          │
 │  ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│  5. USER ON STRIPE CHECKOUT                                                             │
-│  ──────────────────────────                                                             │
-│  https://checkout.stripe.com (Stripe's Page)                                            │
+│  5. USUÁRIO NO STRIPE CHECKOUT                                                          │
+│  ─────────────────────────────                                                          │
+│  https://checkout.stripe.com (Página do Stripe)                                         │
 │       │                                                                                  │
-│       ├──► Enters email                                                                 │
-│       ├──► Enters card number                                                           │
-│       ├──► Stripe validates and processes (3DS if needed)                              │
+│       ├──► Insere email                                                                 │
+│       ├──► Insere número do cartão                                                     │
+│       ├──► Stripe valida e processa (3DS se necessário)                                │
 │       │                                                                                  │
-│       └──► After success, Stripe redirects to:                                         │
+│       └──► Após sucesso, Stripe redireciona para:                                      │
 │            http://localhost:8080/thank-you?session_id=cs_test_a18ZtTRDi89...           │
 │                                                                                          │
 │  ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│  6. CONFIRMATION                                                                        │
-│  ───────────────                                                                        │
+│  6. CONFIRMAÇÃO                                                                         │
+│  ──────────────                                                                         │
 │  ThankYou.tsx                                                                           │
 │       │                                                                                  │
-│       ├──► Extracts session_id from URL                                                │
+│       ├──► Extrai session_id da URL                                                    │
 │       ├──► GET /session-status?session_id=cs_test_...                                  │
 │       │                                                                                  │
 │       ▼                                                                                  │
 │  server/index.ts                                                                        │
 │       │                                                                                  │
 │       └──► stripe.checkout.sessions.retrieve(sessionId)                                │
-│            Returns: { status, payment_status, customer_details, amount_total }         │
+│            Retorna: { status, payment_status, customer_details, amount_total }         │
 │                                                                                          │
 │       ▼                                                                                  │
 │  ThankYou.tsx                                                                           │
 │       │                                                                                  │
-│       ├──► payment_status === 'paid' ? Show success : Show error                       │
-│       └──► clearCart() // Clear the cart                                               │
+│       ├──► payment_status === 'paid' ? Mostra sucesso : Mostra erro                    │
+│       └──► clearCart() // Limpa o carrinho                                             │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## How Sessions Work (No User Authentication)
+## Como a Sessão Funciona (Sem Autenticação de Usuário)
 
-### Why NO login/authentication required?
+### Por que NÃO precisa de login/autenticação?
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                      WHY NO AUTHENTICATION REQUIRED?                                     │
+│                     POR QUE NÃO PRECISA DE AUTENTICAÇÃO?                                 │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
-│  1. CART IS ON THE CLIENT                                                               │
-│  ────────────────────────                                                               │
+│  1. O CARRINHO ESTÁ NO CLIENTE                                                          │
+│  ───────────────────────────────                                                        │
 │  localStorage (Browser)                                                                 │
 │       │                                                                                  │
 │       └──► nerdicforge_cart = [{ product, quantity }, ...]                             │
 │                                                                                          │
-│  → No "user session" on the server                                                      │
-│  → Cart is stored in client's browser                                                  │
-│  → Each browser has its own cart                                                        │
+│  → Não há "sessão de usuário" no servidor                                              │
+│  → O carrinho é armazenado no navegador do cliente                                     │
+│  → Cada navegador tem seu próprio carrinho                                             │
 │                                                                                          │
 │  ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│  2. PAYMENT IS HANDLED BY STRIPE                                                        │
-│  ───────────────────────────────                                                        │
+│  2. O PAGAMENTO É DO STRIPE                                                             │
+│  ──────────────────────────────                                                         │
 │  Stripe Checkout Session                                                                │
 │       │                                                                                  │
 │       └──► cs_test_a18ZtTRDi89awe8abMUM4fPRzT5AHWaW9sTFeHIfCOyM...                    │
 │                                                                                          │
-│  → The "session_id" IS the purchase identifier                                          │
-│  → Stripe stores: items, prices, payment status                                        │
-│  → After payment, we query Stripe to confirm                                           │
+│  → O "session_id" É a identificação da compra                                          │
+│  → Stripe armazena: items, preços, status do pagamento                                 │
+│  → Depois de pago, consultamos o Stripe para confirmar                                 │
 │                                                                                          │
 │  ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│  3. EMAIL IS COLLECTED AT CHECKOUT                                                      │
-│  ─────────────────────────────────                                                      │
+│  3. EMAIL É COLETADO NO CHECKOUT                                                        │
+│  ───────────────────────────────                                                        │
 │  Stripe Checkout Page                                                                   │
 │       │                                                                                  │
-│       └──► User enters email on Stripe's page                                          │
-│            → Stripe stores customer_details.email                                      │
-│            → We can use it to send confirmation                                        │
+│       └──► Usuário digita email na página do Stripe                                    │
+│            → Stripe armazena customer_details.email                                    │
+│            → Podemos usar para enviar confirmação                                      │
 │                                                                                          │
-│  RESULT:                                                                                │
-│  ───────                                                                                │
-│  ✅ Anonymous checkout (guest checkout)                                                │
-│  ✅ No registration required                                                           │
-│  ✅ Less friction = more conversions                                                   │
-│  ✅ Payment data secure on Stripe                                                      │
+│  RESULTADO:                                                                             │
+│  ──────────                                                                             │
+│  ✅ Checkout anônimo (guest checkout)                                                  │
+│  ✅ Sem necessidade de cadastro                                                        │
+│  ✅ Menor atrito = mais conversões                                                     │
+│  ✅ Dados de pagamento seguros no Stripe                                               │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Session Technologies Used
+### Tecnologias de Sessão Usadas
 
-| Where | Technology | What it Stores | Lifetime |
-|-------|------------|----------------|----------|
-| **Browser** | localStorage | Cart (items) | Permanent until cleared |
-| **Stripe** | Checkout Session | Order, payment | 24 hours |
-| **Backend** | Memory (Map) | Order tracking | While server runs |
+| Onde | Tecnologia | O que Armazena | Tempo de Vida |
+|------|------------|----------------|---------------|
+| **Browser** | localStorage | Carrinho (items) | Permanente até limpar |
+| **Stripe** | Checkout Session | Pedido, pagamento | 24 horas |
+| **Backend** | Memory (Map) | Order tracking | Enquanto server roda |
 
 ---
 
-## System Architecture
+## Arquitetura do Sistema
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                              COMPLETE ARCHITECTURE                                       │
+│                              ARQUITETURA COMPLETA                                        │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
 │   FRONTEND (React - localhost:8080)                                                     │
 │   ┌─────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                  │   │
 │   │   src/                                                                          │   │
-│   │   ├── data/products.ts          ← Product data (local)                         │   │
+│   │   ├── data/products.ts          ← Dados dos produtos (local)                   │   │
 │   │   │                                                                              │   │
-│   │   ├── context/CartContext.tsx   ← Cart state (React Context)                   │   │
+│   │   ├── context/CartContext.tsx   ← Estado do carrinho (React Context)           │   │
 │   │   │       ├── items: CartItem[]                                                 │   │
 │   │   │       ├── addToCart()                                                       │   │
 │   │   │       ├── removeFromCart()                                                  │   │
 │   │   │       ├── updateQuantity()                                                  │   │
 │   │   │       └── clearCart()                                                       │   │
 │   │   │                                                                              │   │
-│   │   ├── lib/api.ts                ← HTTP client for backend                      │   │
+│   │   ├── lib/api.ts                ← Cliente HTTP para backend                    │   │
 │   │   │       ├── createCheckoutSession()                                           │   │
 │   │   │       └── getSessionStatus()                                                │   │
 │   │   │                                                                              │   │
 │   │   └── pages/                                                                    │   │
-│   │           ├── Cart.tsx          ← Cart page + checkout button                  │   │
-│   │           ├── ThankYou.tsx      ← Post-payment confirmation                    │   │
-│   │           ├── Shop.tsx          ← Product listing                              │   │
-│   │           └── Product.tsx       ← Product detail                               │   │
+│   │           ├── Cart.tsx          ← Página do carrinho + botão checkout          │   │
+│   │           ├── ThankYou.tsx      ← Confirmação pós-pagamento                    │   │
+│   │           ├── Shop.tsx          ← Lista de produtos                            │   │
+│   │           └── Product.tsx       ← Detalhe do produto                           │   │
 │   │                                                                                  │   │
 │   └─────────────────────────────────────────────────────────────────────────────────┘   │
 │                                              │                                           │
@@ -224,16 +224,16 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 │   │   server/index.ts                                                               │   │
 │   │   │                                                                              │   │
 │   │   ├── POST /create-checkout-session                                             │   │
-│   │   │       ├── Receives items from frontend                                      │   │
-│   │   │       ├── Converts to Stripe line_items                                     │   │
-│   │   │       ├── Creates Checkout Session via Stripe API                          │   │
-│   │   │       └── Returns { url, sessionId }                                        │   │
+│   │   │       ├── Recebe items do frontend                                          │   │
+│   │   │       ├── Converte para Stripe line_items                                   │   │
+│   │   │       ├── Cria Checkout Session via Stripe API                             │   │
+│   │   │       └── Retorna { url, sessionId }                                        │   │
 │   │   │                                                                              │   │
 │   │   ├── GET /session-status                                                       │   │
-│   │   │       └── Queries payment status from Stripe                               │   │
+│   │   │       └── Consulta status do pagamento no Stripe                           │   │
 │   │   │                                                                              │   │
-│   │   └── POST /webhook (future)                                                    │   │
-│   │           └── Receives Stripe events (payment succeeded, etc.)                 │   │
+│   │   └── POST /webhook (futuro)                                                    │   │
+│   │           └── Recebe eventos do Stripe (payment succeeded, etc.)                │   │
 │   │                                                                                  │   │
 │   └─────────────────────────────────────────────────────────────────────────────────┘   │
 │                                              │                                           │
@@ -251,10 +251,10 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 │   │   └── success_url / cancel_url                                                  │   │
 │   │                                                                                  │   │
 │   │   Hosted Checkout Page                                                          │   │
-│   │   ├── Collects email                                                            │   │
-│   │   ├── Collects card (PCI compliant)                                            │   │
-│   │   ├── 3D Secure if needed                                                       │   │
-│   │   └── Redirects to success_url                                                  │   │
+│   │   ├── Coleta email                                                              │   │
+│   │   ├── Coleta cartão (PCI compliant)                                            │   │
+│   │   ├── 3D Secure se necessário                                                   │   │
+│   │   └── Redireciona para success_url                                              │   │
 │   │                                                                                  │   │
 │   └─────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                          │
@@ -263,33 +263,33 @@ E-commerce with complete Stripe integration, built step-by-step for learning.
 
 ---
 
-## All Functions (Code)
+## Todas as Funções (Código)
 
-### 1. CartContext.tsx - Cart Management
+### 1. CartContext.tsx - Gerenciamento do Carrinho
 
 ```typescript
-// Initial state - loads from localStorage
+// Estado inicial - carrega do localStorage
 const [items, setItems] = useState<CartItem[]>(() => {
   const stored = localStorage.getItem('nerdicforge_cart');
   return stored ? JSON.parse(stored) : [];
 });
 
-// Auto-persist
+// Persiste automaticamente
 useEffect(() => {
   localStorage.setItem('nerdicforge_cart', JSON.stringify(items));
 }, [items]);
 
-// Available functions
-addToCart(product)           // Add or increment
+// Funções disponíveis
+addToCart(product)           // Adiciona ou incrementa
 removeFromCart(productId)    // Remove item
-updateQuantity(id, qty)      // Update quantity
-clearCart()                  // Clear all
+updateQuantity(id, qty)      // Atualiza quantidade
+clearCart()                  // Limpa tudo
 ```
 
-### 2. api.ts - Backend Communication
+### 2. api.ts - Comunicação com Backend
 
 ```typescript
-// Create checkout session
+// Cria sessão de checkout
 async function createCheckoutSession(items) {
   const response = await fetch('http://localhost:3001/create-checkout-session', {
     method: 'POST',
@@ -299,7 +299,7 @@ async function createCheckoutSession(items) {
   return response.json(); // { url, sessionId }
 }
 
-// Check payment status
+// Verifica status do pagamento
 async function getSessionStatus(sessionId) {
   const response = await fetch(`http://localhost:3001/session-status?session_id=${sessionId}`);
   return response.json(); // { status, paymentStatus, customerEmail, amountTotal }
@@ -309,21 +309,21 @@ async function getSessionStatus(sessionId) {
 ### 3. server/index.ts - Backend
 
 ```typescript
-// Create Checkout Session on Stripe
+// Cria Checkout Session no Stripe
 app.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body;
   
-  // Convert to Stripe format
+  // Converte para formato Stripe
   const lineItems = items.map(item => ({
     price_data: {
       currency: 'sek',
-      unit_amount: Math.round(item.price * 100), // Cents
+      unit_amount: Math.round(item.price * 100), // Centavos
       product_data: { name: item.name },
     },
     quantity: item.quantity,
   }));
 
-  // Create the session
+  // Cria a sessão
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: lineItems,
@@ -335,7 +335,7 @@ app.post('/create-checkout-session', async (req, res) => {
   res.json({ url: session.url, sessionId: session.id });
 });
 
-// Check status
+// Verifica status
 app.get('/session-status', async (req, res) => {
   const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
   res.json({
@@ -349,19 +349,19 @@ app.get('/session-status', async (req, res) => {
 
 ---
 
-## Security
+## Segurança
 
-| Aspect | How it's Handled |
-|--------|------------------|
-| **Card data** | Never touches our server (Stripe hosts) |
-| **STRIPE_SECRET_KEY** | Backend only, never in frontend |
-| **CORS** | Backend only accepts requests from localhost:8080 |
-| **3D Secure** | Stripe applies automatically when needed |
-| **PCI Compliance** | Stripe is certified, we don't need to be |
+| Aspecto | Como é Tratado |
+|---------|----------------|
+| **Dados do cartão** | Nunca tocam nosso servidor (Stripe hospeda) |
+| **STRIPE_SECRET_KEY** | Só no backend, nunca no frontend |
+| **CORS** | Backend só aceita requests de localhost:8080 |
+| **3D Secure** | Stripe aplica automaticamente quando necessário |
+| **PCI Compliance** | Stripe é certificado, nós não precisamos ser |
 
 ---
 
-## How to Run
+## Como Rodar
 
 ```bash
 # Terminal 1 - Backend
@@ -377,58 +377,58 @@ cmd /c "npm run dev"
 - Frontend: http://localhost:8080
 - Backend: http://localhost:3001
 
-**Test Payment:**
-- Card: `4242 4242 4242 4242`
-- Date: Any future date
-- CVC: Any 3 digits
+**Teste de Pagamento:**
+- Cartão: `4242 4242 4242 4242`
+- Data: Qualquer futura
+- CVC: Qualquer 3 dígitos
 
 ---
 
-## What Happens Inside Stripe
+## O que Acontece Dentro do Stripe
 
-### Event Timeline (From Your Real Payment)
+### Timeline de Eventos (Do Seu Pagamento Real)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                       STRIPE EVENT TIMELINE (Real Transaction)                           │
+│                    TIMELINE DE EVENTOS STRIPE (Transação Real)                           │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
 │   15:06:02 │ POST /v1/checkout/sessions → 200 OK                                        │
-│            │ Your backend called Stripe API to create session                           │
-│            │ Stripe created: cs_test_a18ZtTRDi89...                                     │
+│            │ Seu backend chamou Stripe API para criar sessão                            │
+│            │ Stripe criou: cs_test_a18ZtTRDi89...                                       │
 │            │                                                                             │
-│   15:06:02 │ User redirected to checkout.stripe.com                                     │
+│   15:06:02 │ Usuário redirecionado para checkout.stripe.com                             │
 │      ↓     │                                                                             │
-│            │ [User fills payment form]                                                  │
+│            │ [Usuário preenche formulário de pagamento]                                 │
 │      ↓     │                                                                             │
 │   15:07:44 │ payment_intent.created                                                      │
-│            │ PaymentIntent created: pi_3SoQF2BkBVgkSA9U1Xf0LJ2t                         │
+│            │ PaymentIntent criado: pi_3SoQF2BkBVgkSA9U1Xf0LJ2t                          │
 │            │ Amount: 2,799.00 SEK                                                        │
 │            │                                                                             │
 │   15:07:45 │ charge.succeeded                                                            │
-│            │ Charge created: ch_3SoQF2BkBVgkSA9U1On2EaZw                                │
-│            │ Card **** 4242 charged successfully                                        │
+│            │ Charge criado: ch_3SoQF2BkBVgkSA9U1On2EaZw                                 │
+│            │ Cartão **** 4242 cobrado com sucesso                                       │
 │            │                                                                             │
 │   15:07:45 │ payment_intent.succeeded                                                    │
-│            │ Payment confirmed                                                          │
+│            │ Pagamento confirmado                                                        │
 │            │                                                                             │
 │   15:07:45 │ checkout.session.completed                                                  │
-│            │ Checkout session finalized                                                 │
-│            │ → Stripe sends webhook to your server                                      │
+│            │ Sessão de checkout finalizada                                              │
+│            │ → Stripe envia webhook para seu servidor                                   │
 │            │                                                                             │
 │   15:07:48 │ charge.updated                                                              │
-│            │ Final charge update                                                        │
+│            │ Atualização final do charge                                                │
 │            │                                                                             │
-│   15:07:48 │ User redirected to /thank-you?session_id=cs_test_...                      │
+│   15:07:48 │ Usuário redirecionado para /thank-you?session_id=cs_test_...              │
 │            │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Objects Created by Stripe
+### Objetos Criados pelo Stripe
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                            STRIPE OBJECTS CREATED                                        │
+│                         OBJETOS STRIPE CRIADOS                                           │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
 │   CHECKOUT SESSION (cs_test_...)                                                        │
@@ -450,118 +450,118 @@ cmd /c "npm run dev"
 │           ├── Email: jadypbs@gmail.com                                                  │
 │           └── Country: Sweden                                                           │
 │                                                                                          │
-│   HIERARCHY:                                                                            │
-│   ──────────                                                                            │
+│   HIERARQUIA:                                                                           │
+│   ───────────                                                                           │
 │   Checkout Session                                                                      │
-│       └──► PaymentIntent (charge intent)                                               │
-│               └──► Charge (the actual charge)                                          │
-│                       └──► Balance Transaction (balance movement)                      │
+│       └──► PaymentIntent (intenção de cobrança)                                        │
+│               └──► Charge (a cobrança real)                                            │
+│                       └──► Balance Transaction (movimento no saldo)                    │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Stripe API Endpoints Used
+### Endpoints da API Stripe Usados
 
-| Endpoint | Method | When | What it does |
-|----------|--------|------|--------------|
-| `/v1/checkout/sessions` | POST | Create checkout | Creates session with items and URLs |
-| `/v1/checkout/sessions/:id` | GET | Check status | Returns payment status |
-| `/v1/payment_intents/:id` | GET | (internal) | Payment intent details |
-| `/v1/charges/:id` | GET | (internal) | Charge details |
+| Endpoint | Método | Quando | O que faz |
+|----------|--------|--------|-----------|
+| `/v1/checkout/sessions` | POST | Criar checkout | Cria sessão com items e URLs |
+| `/v1/checkout/sessions/:id` | GET | Verificar status | Retorna status do pagamento |
+| `/v1/payment_intents/:id` | GET | (interno) | Detalhes do payment intent |
+| `/v1/charges/:id` | GET | (interno) | Detalhes da cobrança |
 
 ---
 
-## Stripe Costs and Fees (Real Example)
+## Custos e Taxas do Stripe (Exemplo Real)
 
-### Your Transaction Breakdown
+### Breakdown da Sua Transação
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                          COST BREAKDOWN (Real Transaction)                               │
+│                         BREAKDOWN DE CUSTOS (Transação Real)                             │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
-│   SALE VALUE                                                                            │
-│   ══════════                                                                            │
+│   VALOR DA VENDA                                                                        │
+│   ══════════════                                                                        │
 │   Conan the Barbarian (1x)              2,799.00 kr SEK                                │
 │                                         ─────────────────                               │
-│   GROSS TOTAL                           2,799.00 kr SEK                                │
+│   TOTAL BRUTO                           2,799.00 kr SEK                                │
 │                                                                                          │
 │   ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│   STRIPE FEES                                                                           │
-│   ═══════════                                                                           │
+│   TAXAS DO STRIPE                                                                       │
+│   ═══════════════                                                                       │
 │                                                                                          │
-│   Stripe Europe Formula:                                                                │
-│   ──────────────────────                                                                │
-│   Fee = 1.5% + 1.80 SEK (European card)                                                │
-│   Fee = 2.9% + 1.80 SEK (Non-European card)                                            │
+│   Fórmula Stripe Europa:                                                                │
+│   ─────────────────────                                                                 │
+│   Taxa = 1.5% + 1.80 SEK (cartão europeu)                                              │
+│   Taxa = 2.9% + 1.80 SEK (cartão fora da Europa)                                       │
 │                                                                                          │
-│   Your calculation (test card = European):                                             │
+│   Seu cálculo (cartão de teste = europeu):                                             │
 │   ─────────────────────────────────────────                                             │
 │   2,799.00 × 1.5%  = 41.985 kr                                                         │
-│              + 1.80 kr (fixed fee)                                                      │
+│              + 1.80 kr (taxa fixa)                                                      │
 │              ─────────────                                                              │
-│   Total fee        = ~43.78 kr (rounded)                                               │
+│   Total taxa       = ~43.78 kr (arredondado)                                           │
 │                                                                                          │
-│   ⚠️ Your actual fee: 92.77 kr                                                         │
-│   This indicates international card (2.9% + currency conversion fees)                  │
+│   ⚠️ Sua taxa real: 92.77 kr                                                           │
+│   Isso indica cartão internacional (2.9% + taxas de câmbio)                            │
 │                                                                                          │
 │   ═══════════════════════════════════════════════════════════════════════════════════   │
 │                                                                                          │
-│   SUMMARY                                                                               │
-│   ═══════                                                                               │
-│   Gross value:        2,799.00 kr                                                      │
-│   Stripe fees:        -  92.77 kr                                                      │
+│   RESUMO                                                                                │
+│   ══════                                                                                │
+│   Valor bruto:        2,799.00 kr                                                      │
+│   Taxas Stripe:       -  92.77 kr                                                      │
 │                       ───────────────                                                   │
-│   NET VALUE:          2,706.23 kr ← What you receive                                   │
+│   VALOR LÍQUIDO:      2,706.23 kr ← O que você recebe                                 │
 │                                                                                          │
-│   Effective rate:     3.31%                                                            │
+│   Taxa efetiva:       3.31%                                                            │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Stripe Fee Table (Europe)
+### Tabela de Taxas Stripe (Europa)
 
-| Card Type | Percentage Fee | Fixed Fee |
-|-----------|----------------|-----------|
-| **Standard European Cards** | 1.5% | 1.80 SEK |
-| **UK Cards** | 2.5% | 1.80 SEK |
-| **International Cards** | 2.9% | 1.80 SEK |
+| Tipo de Cartão | Taxa Percentual | Taxa Fixa |
+|----------------|-----------------|-----------|
+| **Cartões Europeus Padrão** | 1.5% | 1.80 SEK |
+| **Cartões UK** | 2.5% | 1.80 SEK |
+| **Cartões Internacionais** | 2.9% | 1.80 SEK |
 | **AMEX** | 2.5% | 1.80 SEK |
 | **Klarna (BNPL)** | 3.29% | 1.80 SEK |
 
 
-### Comparison: How Much You Lose Per Sale
+### Comparação: Quanto Você Perde por Venda
 
-| Product Price | Stripe Fee (~3%) | You Receive |
-|---------------|------------------|-------------|
+| Preço Produto | Taxa Stripe (~3%) | Você Recebe |
+|---------------|-------------------|-------------|
 | 2,799 kr | ~84 kr | ~2,715 kr |
 | 2,999 kr | ~90 kr | ~2,909 kr |
 | 3,299 kr | ~99 kr | ~3,200 kr |
 
 ---
 
-## Why Stripe Checkout Works
+## Por que o Stripe Checkout Funciona
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                       WHY STRIPE CHECKOUT IS RELIABLE                                    │
+│                      POR QUE STRIPE CHECKOUT É CONFIÁVEL                                 │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
 │   1. PCI DSS LEVEL 1                                                                    │
 │   ─────────────────                                                                     │
-│   • Highest level of payment security certification                                    │
-│   • Audited annually by third parties                                                  │
-│   • Card data never touches your server                                                │
+│   • Maior nível de certificação de segurança de pagamentos                             │
+│   • Auditado anualmente por terceiros                                                  │
+│   • Dados de cartão nunca tocam seu servidor                                           │
 │                                                                                          │
 │   2. 3D SECURE 2 (SCA)                                                                  │
 │   ────────────────────                                                                  │
-│   • Automatic 2-factor authentication when needed                                      │
-│   • PSD2 compliant (European regulation)                                               │
-│   • Reduces fraud and chargebacks                                                      │
+│   • Autenticação de 2 fatores automática quando necessário                             │
+│   • Compliance com PSD2 (regulação europeia)                                           │
+│   • Reduz fraude e chargebacks                                                         │
 │                                                                                          │
-│   3. ANTI-FRAUD CHECKS                                                                  │
-│   ────────────────────                                                                  │
+│   3. VERIFICAÇÕES ANTI-FRAUDE                                                          │
+│   ──────────────────────────                                                           │
 │   • CVC check: Passed ✓                                                                │
 │   • Street check: Passed ✓                                                             │
 │   • Zip check: Passed ✓                                                                │
@@ -569,111 +569,111 @@ cmd /c "npm run dev"
 │                                                                                          │
 │   4. STRIPE RADAR                                                                       │
 │   ───────────────                                                                       │
-│   • Machine learning for fraud detection                                               │
-│   • Blocks suspicious transactions automatically                                       │
-│   • Learns from millions of global transactions                                        │
+│   • Machine learning para detectar fraude                                              │
+│   • Bloqueia transações suspeitas automaticamente                                      │
+│   • Aprende com milhões de transações globais                                          │
 │                                                                                          │
-│   5. TOKENIZATION                                                                       │
+│   5. TOKENIZAÇÃO                                                                        │
 │   ─────────────                                                                         │
-│   • Card number becomes token (pm_1SoQF2...)                                          │
-│   • Token only works on your Stripe account                                            │
-│   • Even if leaked, can't be used elsewhere                                            │
+│   • Número do cartão vira token (pm_1SoQF2...)                                        │
+│   • Token só funciona na sua conta Stripe                                              │
+│   • Mesmo se vazado, não pode ser usado em outro lugar                                 │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## How to Improve This Integration
+## Como Melhorar Esta Integração
 
-### Essential Improvements (Production)
+### Melhorias Essenciais (Produção)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                           PRODUCTION IMPROVEMENTS                                        │
+│                            MELHORIAS PARA PRODUÇÃO                                       │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
-│   1. WEBHOOKS (CRITICAL)                                                                │
-│   ──────────────────────                                                                │
-│   Now: We only check status when user returns                                          │
-│   Problem: User may close browser before returning                                     │
+│   1. WEBHOOKS (CRÍTICO)                                                                 │
+│   ─────────────────────                                                                 │
+│   Agora: Verificamos status apenas quando usuário volta                                │
+│   Problema: Usuário pode fechar o browser antes de voltar                              │
 │                                                                                          │
-│   SOLUTION:                                                                             │
+│   SOLUÇÃO:                                                                              │
 │   app.post('/webhook', async (req, res) => {                                           │
 │     const event = stripe.webhooks.constructEvent(body, sig, secret);                   │
 │     if (event.type === 'checkout.session.completed') {                                 │
-│       // Update order in database                                                      │
-│       // Send confirmation email                                                       │
-│       // Update inventory                                                              │
+│       // Atualizar pedido no banco                                                     │
+│       // Enviar email de confirmação                                                   │
+│       // Atualizar estoque                                                             │
 │     }                                                                                   │
 │   });                                                                                   │
 │                                                                                          │
-│   2. DATABASE                                                                           │
-│   ──────────                                                                            │
-│   Now: orders = Map() (memory, lost on restart)                                        │
-│   Solution: PostgreSQL / MongoDB / Supabase                                            │
+│   2. BANCO DE DADOS                                                                     │
+│   ─────────────────                                                                     │
+│   Agora: orders = Map() (memória, perde ao reiniciar)                                  │
+│   Solução: PostgreSQL / MongoDB / Supabase                                             │
 │                                                                                          │
-│   3. BACKEND PRICE VALIDATION                                                           │
-│   ───────────────────────────                                                           │
-│   Now: We trust price sent from frontend                                               │
-│   Problem: User can manipulate and pay less                                            │
+│   3. VALIDAÇÃO DE PREÇOS NO BACKEND                                                    │
+│   ───────────────────────────────────                                                  │
+│   Agora: Confiamos no preço enviado pelo frontend                                      │
+│   Problema: Usuário pode manipular e pagar menos                                       │
 │                                                                                          │
-│   SOLUTION:                                                                             │
-│   // backend fetches price from database, not frontend                                 │
+│   SOLUÇÃO:                                                                              │
+│   // backend busca preço do banco, não do frontend                                     │
 │   const product = await db.products.findById(item.productId);                          │
 │   const unit_amount = product.price * 100;                                             │
 │                                                                                          │
 │   4. STRIPE CUSTOMER                                                                    │
-│   ──────────────────                                                                    │
-│   Now: Guest checkout (gcus_...)                                                       │
-│   Improvement: Create Stripe Customer for recurring purchases                          │
+│   ──────────────────                                                                   │
+│   Agora: Guest checkout (gcus_...)                                                     │
+│   Melhoria: Criar Stripe Customer para recorrência                                     │
 │                                                                                          │
 │   const customer = await stripe.customers.create({                                     │
 │     email: 'jadypbs@gmail.com',                                                        │
 │     metadata: { userId: '123' }                                                        │
 │   });                                                                                   │
 │                                                                                          │
-│   5. MORE PAYMENT METHODS                                                               │
-│   ───────────────────────                                                               │
+│   5. MAIS MÉTODOS DE PAGAMENTO                                                          │
+│   ─────────────────────────────                                                        │
 │   payment_method_types: ['card', 'klarna', 'swish', 'ideal']                           │
 │                                                                                          │
-│   6. STRIPE TAX (AUTOMATIC)                                                             │
-│   ─────────────────────────                                                             │
+│   6. STRIPE TAX (AUTOMÁTICO)                                                            │
+│   ──────────────────────────                                                           │
 │   automatic_tax: { enabled: true }                                                     │
-│   → Stripe calculates and charges VAT automatically                                    │
+│   → Stripe calcula e cobra VAT automaticamente                                         │
 │                                                                                          │
-│   7. CONFIRMATION EMAILS                                                                │
-│   ──────────────────────                                                                │
-│   • Stripe can send automatic receipts                                                 │
-│   • Or integrate with SendGrid/Resend for custom emails                               │
+│   7. EMAILS DE CONFIRMAÇÃO                                                              │
+│   ────────────────────────                                                             │
+│   • Stripe pode enviar recibos automáticos                                             │
+│   • Ou integrar com SendGrid/Resend para customizado                                   │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Implementation Priority
+### Prioridade de Implementação
 
-| # | Improvement | Impact | Effort |
-|---|-------------|--------|--------|
-| 1 | Webhooks | 🔴 Critical | Medium |
-| 2 | Price validation | 🔴 Critical | Low |
-| 3 | Database | 🟡 High | Medium |
-| 4 | Stripe Tax | 🟡 High | Low |
-| 5 | More payment methods | 🟢 Medium | Low |
-| 6 | Stripe Customer | 🟢 Medium | Low |
-| 7 | Automatic emails | 🟢 Medium | Medium |
+| # | Melhoria | Impacto | Esforço |
+|---|----------|---------|---------|
+| 1 | Webhooks | 🔴 Crítico | Médio |
+| 2 | Validação de preços | 🔴 Crítico | Baixo |
+| 3 | Banco de dados | 🟡 Alto | Médio |
+| 4 | Stripe Tax | 🟡 Alto | Baixo |
+| 5 | Mais payment methods | 🟢 Médio | Baixo |
+| 6 | Stripe Customer | 🟢 Médio | Baixo |
+| 7 | Emails automáticos | 🟢 Médio | Médio |
 
 ---
 
-## VAT and Taxes
+## VAT e Impostos
 
-### Current Situation: No Automatic VAT
+### Situação Atual: Sem VAT Automático
 
 ```
-Product: 2,799.00 kr
-VAT:     Not calculated/charged separately
+Produto: 2,799.00 kr
+VAT:     Não calculado/cobrado separadamente
 ```
 
-### With Stripe Tax (Recommended)
+### Com Stripe Tax (Recomendado)
 
 ```typescript
 const session = await stripe.checkout.sessions.create({
@@ -683,49 +683,49 @@ const session = await stripe.checkout.sessions.create({
 });
 ```
 
-**Result:**
+**Resultado:**
 ```
-Base product:  2,239.20 kr
+Produto base:  2,239.20 kr
 VAT (25%):       559.80 kr
 TOTAL:         2,799.00 kr
 
-Stripe Tax identifies customer country and applies correct rate:
-- Sweden: 25%
-- Germany: 19%
-- USA: 0% (if B2C digital)
+Stripe Tax identifica país do cliente e aplica taxa correta:
+- Suécia: 25%
+- Alemanha: 19%
+- EUA: 0% (se B2C digital)
 ```
 
-### Stripe Tax Cost
+### Custo do Stripe Tax
 
-| Model | Price |
-|-------|-------|
-| Pay-as-you-go (No-code) | 0.5% of transaction |
-| Pay-as-you-go (API) | $0.50 per transaction |
-| Tax Complete | Starting at $90/month |
+| Modelo | Preço |
+|--------|-------|
+| Pay-as-you-go (No-code) | 0.5% da transação |
+| Pay-as-you-go (API) | $0.50 por transação |
+| Tax Complete | A partir de $90/mês |
 
 ---
 
-## Summary: Total Costs Per Sale
+## Resumo: Custos Totais de uma Venda
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                            TOTAL COSTS PER SALE                                          │
+│                         CUSTOS TOTAIS DE UMA VENDA                                       │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
-│   Example: Sale of 2,799.00 kr to customer in Sweden                                    │
+│   Exemplo: Venda de 2,799.00 kr para cliente na Suécia                                  │
 │                                                                                          │
-│   GROSS REVENUE                           2,799.00 kr                                   │
+│   RECEITA BRUTA                           2,799.00 kr                                   │
 │                                                                                          │
-│   DEDUCTIONS:                                                                           │
-│   ───────────                                                                           │
+│   DEDUÇÕES:                                                                             │
+│   ─────────                                                                             │
 │   Stripe Processing (1.5% + 1.80)         -  43.79 kr                                  │
-│   Stripe Tax (if used, 0.5%)              -  14.00 kr                                  │
-│   VAT to collect (25%)                    - 559.80 kr                                  │
+│   Stripe Tax (se usar, 0.5%)              -  14.00 kr                                  │
+│   VAT a recolher (25%)                    - 559.80 kr                                  │
 │                                           ────────────                                  │
-│   NET REVENUE                             2,181.41 kr                                  │
+│   RECEITA LÍQUIDA                         2,181.41 kr                                  │
 │                                                                                          │
-│   % Retained in fees:                     ~22% (includes VAT)                          │
-│   % Retained without VAT:                 ~2.1%                                        │
+│   % Retido em taxas:                      ~22% (inclui VAT)                            │
+│   % Retido sem VAT:                       ~2.1%                                        │
 │                                                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
